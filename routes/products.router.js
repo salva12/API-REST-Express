@@ -1,46 +1,24 @@
 const express = require('express');
+const ProductsService = require('../services/product.service');
+
+
 const router = express.Router();
+const service = new ProductsService();
 
 router.get('/', (req,res)=>{
-  const {size} = req.query;
-  const limit = size || 10;
-  const products = [
-    {
-      "id": 1,
-      "name": "manzanas",
-      "shopId": 1
-    },
-    {
-      "id": 2,
-      "name": "peras",
-      "shopId": 1
-    },
-    {
-      "id": 3,
-      "name": "escoba",
-      "shopId": 2
-    },
-    {
-      "id": 4,
-      "name": "detergente",
-      "shopId": 2
-    }
-  ];
-  res.json(products.splice(0,limit));
+  const products = service.find()
+  res.json(products);
 })
 
 router.get('/:id', (req,res)=>{
   const {id} = req.params;
-  if (id==='999') {
+  const product= service.findOne(id);
+  if (!product) {
     res.status(404).json({
       message:'Not found'
     });
   } else {
-    res.status(200).json({
-      id,
-      name:"Guitar",
-      price:5600
-    });
+    res.status(200).json(product);
   }
 });
 
